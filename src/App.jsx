@@ -1,23 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Formulario from './components/Formulario';
 import Listado from './components/Listado';
 import './App.css';
 
 function App() {
-  const [citas, setCitas] = useState([
-    {
-      id: '1',
-      mascota: 'Pluto',
-      propietario: 'Mickey mouse',
-      fecha: '09/05/2025',
-      hora: '09:00',
-      sintomas: 'Fiebre'
-    },
-  ]);
+  const [citas, setCitas] = useState(function () {
+    const citasGuardadas = localStorage.getItem('citas');
+    if (citasGuardadas !== null) {
+      return JSON.parse(citasGuardadas);
+    } else {
+      return [];
+    }
+  });
+  
+  // Recuperar citas del localStorage al iniciar
+  useEffect(function () {
+    const citasGuardadas = localStorage.getItem('citas');
+    if (citasGuardadas !== null) {
+      const citasRecuperadas = JSON.parse(citasGuardadas);
+      setCitas(citasRecuperadas);
+    }
+  }, []);
 
-  const AgregarCitas = (nuevaCita) => {
-    setCitas([...citas, nuevaCita])
-  }
+  // Guardar en localStorage cuando cambian las citas
+  useEffect(function () {
+    localStorage.setItem('citas', JSON.stringify(citas));
+  }, [citas]);
+
+  // Función para agregar nueva cita
+  const AgregarCitas = function (nuevaCita) {
+    const nuevaLista = [];
+    citas.forEach(function (cita) {
+      nuevaLista.push(cita);
+    });
+    nuevaLista.push(nuevaCita);
+    setCitas(nuevaLista);
+  };
+
   return (
     <>
       <h1>ADMINISTRADOR DE PACIENTES</h1>
@@ -30,4 +49,3 @@ function App() {
 }
 
 export default App;
-

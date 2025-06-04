@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './Formulario.css';
+
 const Formulario = ({AgregarCitas}) => {
   const [citas, setCitas] = useState({
     mascota: '',
